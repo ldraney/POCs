@@ -1,0 +1,172 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="space-y-8">
+    <!-- Hero Section -->
+    <div class="text-center">
+        <h1 class="text-4xl font-bold text-gray-900 mb-4">
+            All Services Dashboard
+        </h1>
+        <p class="text-lg text-gray-600 max-w-2xl mx-auto">
+            Unified dashboard integrating all microservices: clients, pricing, formulas, 
+            cost calculation, email, purchase orders, and whitelabel management.
+        </p>
+    </div>
+    
+    <!-- Service Health Status -->
+    <div class="bg-white p-6 rounded-lg shadow">
+        <h2 class="text-xl font-semibold mb-4">Microservice Health</h2>
+        <div hx-get="/api/services/health" 
+             hx-trigger="load, every 30s"
+             hx-swap="innerHTML">
+            <div class="text-gray-600">Checking service status...</div>
+        </div>
+    </div>
+    
+    <!-- Client Statistics -->
+    <div class="bg-white p-6 rounded-lg shadow">
+        <h2 class="text-xl font-semibold mb-4">Client Overview</h2>
+        <div hx-get="/api/clients/stats" 
+             hx-trigger="load"
+             hx-swap="innerHTML">
+            <div class="text-gray-600">Loading client statistics...</div>
+        </div>
+    </div>
+    
+    <!-- Service Actions -->
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div class="bg-white p-6 rounded-lg shadow">
+            <h3 class="text-xl font-semibold text-gray-900 mb-2">Client Service</h3>
+            <p class="text-gray-600 mb-4">Manage customer relationships and formula assignments.</p>
+            <button class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">
+                View Clients
+            </button>
+        </div>
+        
+        <div class="bg-white p-6 rounded-lg shadow">
+            <h3 class="text-xl font-semibold text-gray-900 mb-2">Cost Calculator</h3>
+            <p class="text-gray-600 mb-4">Calculate manufacturing costs and pricing.</p>
+            <button class="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600">
+                Open Calculator
+            </button>
+        </div>
+        
+        <div class="bg-white p-6 rounded-lg shadow">
+            <h3 class="text-xl font-semibold text-gray-900 mb-2">Email Service</h3>
+            <p class="text-gray-600 mb-4">Send notifications and client communications.</p>
+            <button class="bg-purple-500 text-white px-4 py-2 rounded hover:bg-purple-600">
+                Compose Email
+            </button>
+        </div>
+        
+        <div class="bg-white p-6 rounded-lg shadow">
+            <h3 class="text-xl font-semibold text-gray-900 mb-2">Formula Service</h3>
+            <p class="text-gray-600 mb-4">Manage product formulations and recipes.</p>
+            <button class="bg-orange-500 text-white px-4 py-2 rounded hover:bg-orange-600">
+                Browse Formulas
+            </button>
+        </div>
+        
+        <div class="bg-white p-6 rounded-lg shadow">
+            <h3 class="text-xl font-semibold text-gray-900 mb-2">Purchase Orders</h3>
+            <p class="text-gray-600 mb-4">Track and manage purchase orders.</p>
+            <button class="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600">
+                View Orders
+            </button>
+        </div>
+        
+        <div class="bg-white p-6 rounded-lg shadow">
+            <h3 class="text-xl font-semibold text-gray-900 mb-2">White Label</h3>
+            <p class="text-gray-600 mb-4">Manage white label products and branding.</p>
+            <button class="bg-pink-500 text-white px-4 py-2 rounded hover:bg-pink-600">
+                Manage Labels
+            </button>
+        </div>
+    </div>
+</div>
+        
+        <!-- Search Bar -->
+        <div class="relative">
+            <input 
+                type="text" 
+                x-model="searchTerm"
+                hx-get="/api/search"
+                hx-trigger="keyup changed delay:300ms"
+                hx-target="#search-results"
+                hx-indicator="#loading-indicator"
+                name="q"
+                placeholder="Search by formula name or ingredient..."
+                class="w-full px-4 py-3 pl-12 pr-4 text-gray-900 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+            >
+            <svg class="absolute left-4 top-3.5 h-5 w-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+            </svg>
+            
+            <!-- Loading indicator -->
+            <div id="loading-indicator" class="htmx-indicator absolute right-4 top-3.5">
+                <svg class="animate-spin h-5 w-5 text-blue-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                    <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                    <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                </svg>
+            </div>
+        </div>
+        
+        <!-- Advanced Search Toggle -->
+        <button 
+            @click="showAdvanced = !showAdvanced"
+            class="mt-4 text-sm text-blue-600 hover:text-blue-800 font-medium"
+        >
+            <span x-text="showAdvanced ? 'Hide' : 'Show'"></span> Advanced Options
+            <svg x-show="!showAdvanced" class="inline-block ml-1 h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+            </svg>
+            <svg x-show="showAdvanced" class="inline-block ml-1 h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 15l7-7 7 7"></path>
+            </svg>
+        </button>
+        
+        <!-- Advanced Search Options -->
+        <div x-show="showAdvanced" x-transition class="mt-4 p-4 bg-gray-50 rounded-lg">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Date Range</label>
+                    <input 
+                        type="date" 
+                        hx-get="/api/search"
+                        hx-trigger="change"
+                        hx-target="#search-results"
+                        hx-include="[name='q']"
+                        name="date_from"
+                        class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-blue-500"
+                    >
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Sort By</label>
+                    <select 
+                        hx-get="/api/search"
+                        hx-trigger="change"
+                        hx-target="#search-results"
+                        hx-include="[name='q']"
+                        name="sort"
+                        class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-blue-500"
+                    >
+                        <option value="name">Formula Name</option>
+                        <option value="date">Date Created</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Search Results -->
+    <div id="search-results">
+        <!-- Initial formulas or "Start searching" message -->
+        <div class="text-center py-12">
+            <svg class="mx-auto h-12 w-12 text-gray-400 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"></path>
+            </svg>
+            <p class="text-gray-500">Start searching to view formulas</p>
+        </div>
+    </div>
+</div>
+{% endblock %}

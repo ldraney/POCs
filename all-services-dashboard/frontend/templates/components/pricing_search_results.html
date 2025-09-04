@@ -1,0 +1,63 @@
+{% if results %}
+<div class="bg-white border border-gray-200 rounded-lg p-6">
+    <h4 class="font-semibold mb-4">🔍 Search Results for "{{ query }}" ({{ results|length }} found)</h4>
+    
+    <div class="overflow-x-auto">
+        <table class="min-w-full divide-y divide-gray-200">
+            <thead class="bg-gray-50">
+                <tr>
+                    <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">Ingredient</th>
+                    <th class="px-4 py-2 text-right text-xs font-medium text-gray-500 uppercase">Avg Cost/kg</th>
+                    <th class="px-4 py-2 text-right text-xs font-medium text-gray-500 uppercase">Latest Cost/kg</th>
+                    <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">Last Vendor</th>
+                    <th class="px-4 py-2 text-center text-xs font-medium text-gray-500 uppercase">Trend</th>
+                    <th class="px-4 py-2 text-center text-xs font-medium text-gray-500 uppercase">Orders</th>
+                </tr>
+            </thead>
+            <tbody class="divide-y divide-gray-200">
+                {% for item in results %}
+                <tr class="hover:bg-gray-50">
+                    <td class="px-4 py-2 text-sm font-medium text-gray-900">
+                        {{ item.ingredient_name }}
+                    </td>
+                    <td class="px-4 py-2 text-sm text-right font-mono">
+                        ${{ "%.2f"|format(item.avg_cost_per_kg) }}
+                    </td>
+                    <td class="px-4 py-2 text-sm text-right font-mono">
+                        ${{ "%.2f"|format(item.latest_cost_per_kg) }}
+                    </td>
+                    <td class="px-4 py-2 text-sm text-blue-600">
+                        {{ item.last_vendor or 'Unknown' }}
+                    </td>
+                    <td class="px-4 py-2 text-sm text-center">
+                        {% if item.price_trend == 'rising' %}
+                            <span class="text-red-500">📈</span>
+                        {% elif item.price_trend == 'falling' %}
+                            <span class="text-green-500">📉</span>
+                        {% else %}
+                            <span class="text-gray-500">➡️</span>
+                        {% endif %}
+                    </td>
+                    <td class="px-4 py-2 text-sm text-center text-gray-600">
+                        {{ item.purchase_count }}
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    
+    {% if results|length == 20 %}
+    <p class="mt-4 text-sm text-gray-500 text-center">Showing top 20 results. Refine search for more specific matches.</p>
+    {% endif %}
+</div>
+{% else %}
+<div class="bg-yellow-50 border border-yellow-200 rounded-lg p-6 text-center">
+    <svg class="mx-auto h-8 w-8 text-yellow-500 mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.172 16.172a4 4 0 015.656 0M9 12h6m-3-6v1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+    </svg>
+    <h4 class="font-medium text-yellow-800 mb-1">No pricing data found</h4>
+    <p class="text-yellow-600 text-sm">No ingredients matching "{{ query }}" found in purchase order history.</p>
+    <p class="text-yellow-500 text-xs mt-1">Try searching with partial names (e.g., "jojoba" instead of "jojoba oil")</p>
+</div>
+{% endif %}

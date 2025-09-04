@@ -1,0 +1,45 @@
+[tool.poetry]
+name = "namespace-service"
+version = "0.1.0"
+description = "Template namespace service with FastAPI, HTMX, Alpine.js and Tailwind"
+authors = ["Pure Earth Labs"]
+readme = "README.md"
+packages = [{include = "app"}]
+
+[tool.poetry.dependencies]
+python = "^3.11"
+fastapi = "^0.104.1"
+uvicorn = {extras = ["standard"], version = "^0.24.0"}
+python-dotenv = "^1.0.0"
+jinja2 = "^3.1.2"
+python-multipart = "^0.0.6"
+requests = "^2.32.5"
+aiohttp = "^3.9.0"
+
+[tool.poetry.group.dev.dependencies]
+pytest = "^7.4.3"
+pytest-asyncio = "^0.21.1"
+httpx = "^0.25.2"
+black = "^23.11.0"
+ruff = "^0.1.6"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.black]
+line-length = 88
+target-version = ['py311']
+
+[tool.ruff]
+line-length = 88
+select = ["E", "F", "I", "N", "UP", "YTT", "B", "A", "C4", "DTZ", "ISC", "ICN", "PIE", "PT", "RET", "SIM", "TID", "TCH", "ARG", "PLC", "PLE", "PLR", "PLW", "RUF"]
+ignore = ["E501", "B008", "B905", "RUF001", "RUF002", "RUF003"]
+fixable = ["ALL"]
+unfixable = []
+target-version = "py311"
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+python_files = ["test_*.py"]
+asyncio_mode = "auto"

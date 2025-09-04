@@ -1,0 +1,27 @@
+<div class="bg-white rounded-lg shadow-sm hover:shadow-md transition-shadow p-6 mb-4">
+    <div class="flex justify-between items-start mb-4">
+        <div>
+            <h3 class="text-lg font-semibold text-gray-900">{{ formula.formula_name }}</h3>
+            {% if formula.formula_number %}
+            <p class="text-sm text-gray-600">Formula #: {{ formula.formula_number }}</p>
+            {% endif %}
+            {% if formula.created_at %}
+            <p class="text-xs text-gray-500">Created: {{ formula.created_at.strftime('%Y-%m-%d') if formula.created_at else 'N/A' }}</p>
+            {% endif %}
+            {% if formula.file_source %}
+            <p class="text-xs text-gray-400">Source: {{ formula.file_source }}</p>
+            {% endif %}
+        </div>
+        <button 
+            hx-get="/api/formulas/{{ formula.id }}"
+            hx-target="#formula-detail-{{ formula.id }}"
+            hx-swap="innerHTML"
+            class="px-3 py-1 text-sm bg-blue-50 text-blue-600 rounded-md hover:bg-blue-100 transition-colors"
+        >
+            View Details
+        </button>
+    </div>
+    
+    <!-- Expandable detail section -->
+    <div id="formula-detail-{{ formula.id }}"></div>
+</div>
